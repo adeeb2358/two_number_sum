@@ -6,12 +6,60 @@
 //  Copyright © 2019 adeeb mohammed. All rights reserved.
 //
 /*
-    this programs will take one empty array and an integer and check whether the sum of any two intgers will make up the sum of that integer number
+    this programs will take one empty array and an integer and check whether the sum of
+    any two intgers will make up the sum of that integer number
+    Step 1 :- Sort the array [Good sorting algorithm will in nlogn]
+    
  */
 
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
+
+/*
+    Solution without using hashtable
+    here the time complexity will be O(logn)
+    sort the array in ascending order
+    sort function complexity is O(logn)
+    Step 1: set leftPointer to left of the array
+    Step 2: Set right pointer to the right of the array
+    Step 3: check l+r == target sum, if yes return left and right number
+    Step 4: if l+r is less than target number advance left to next position
+    Step 5: repeat Step 3 and 4:
+    Step 6: If l+r is greater than target sum advance right pointer one position to left.
+    Step 7: repeat step 3 to 6
+ */
+
+std::vector<int> _twoNumberSum(std::vector<int> array,int targetSum){
+    
+    std::vector<int> result;
+    int currentLeft  = 0;
+    int currentRight = 0;
+    int currentSum   = 0;
+    
+    std::sort(array.begin(),array.end());
+    auto rIt = array.rbegin();
+    auto it = array.begin();
+    currentRight = *rIt;
+    currentLeft = *it;
+    
+    while(currentLeft < currentRight){
+        currentSum = currentLeft + currentRight;
+        if(currentSum == targetSum){
+            result.push_back(currentLeft);
+            result.push_back(currentRight);
+            return result;
+        }else if(currentSum > targetSum){
+            currentRight = *(++rIt);
+        }else{
+            currentLeft =*(++it);
+        }
+    }
+    
+    return result;
+ }
+
 /*
     Solution using hash Table .
     Time Complexity o(n) :-> order of the length of n
@@ -28,9 +76,7 @@ std::vector<int> twoNumberSum(std::vector<int>array,int targetSum){
     std::vector<int> result;
     std::unordered_map<int,int> checkList;
     int difference = 0;
-    int currentNum = 0;
-    for(auto it=array.begin();it != array.end(); ++it){
-        currentNum = *it;
+    for(auto currentNum : array){
         difference = targetSum - currentNum;
         if(checkList.find(difference) != checkList.end()){
             result.push_back(difference);
@@ -60,10 +106,10 @@ int main(int argc, const char * argv[]) {
         std::cin >> inputNum;
         array.push_back(inputNum);
     }
-    auto result = twoNumberSum(array,targetSum);
+    auto result = _twoNumberSum(array,targetSum);
     std::cout << "The result Numbers are" << std::endl;
-    for(auto it = result.begin(); it!= result.end(); ++it){
-        std::cout << *it << " ";
+    for(auto it : result){
+        std::cout << it << " ";
     }
     std::cout << std::endl;
     return 0;
